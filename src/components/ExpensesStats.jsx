@@ -25,12 +25,20 @@ function ExpensesStats({stats, predictions, refreshData }) {
         await refreshRaportByTimeRange();
     };
 
+    function getTimestamp (timeStamp) {
+        const pad = (n,s=2) => (`${new Array(s).fill(0)}${n}`).slice(-s);
+        const d = new Date(timeStamp);
+
+        return `${pad(d.getFullYear(),4)}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+    }
     const refreshRaportByTimeRange = async () => {
         try {
             setLoading(true);
             const [timeFrom, timeTo] = timeRange;
             if (timeFrom && timeTo) {
-                const raportsByTimeRange = await getRaport(timeFrom, timeTo);
+                let timeFromT = getTimestamp(timeFrom);
+                let timeToT = getTimestamp(timeTo);
+                const raportsByTimeRange = await getRaport(timeFromT, timeToT);
                 setRaports(await raportsByTimeRange.json());
             }
             setLoading(false);
